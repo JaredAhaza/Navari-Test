@@ -58,12 +58,19 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-8">
-                                        <div class="navbar-collapse hidden-sm hidden-xs" style="margin-left: 60%;">
+                                        <div class="navbar-collapse hidden-sm hidden-xs" style="margin-left: 40%;">
                                             <ul class="nav navbar-nav">
                                                 <li><a href="/">Home</a></li>
                                                 <li><a href="/books">Books</a></li>
-                                                <li><a href="/customerlogin">Login</a></li>
+                                                <li><a href="/logout">Logout</a></li>
                                                 <li><a href="/customersignup">Register</a></li>
+                                                <li>
+                                                    <a href="#" title="Account">
+                                                        <i class="fa fa-user"></i>
+                                                        <p>Hey, <b>{{ customer.user }}</b> </p>
+                                                        <small class="text-muted">{{ customer.customer_id }}</small>
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>

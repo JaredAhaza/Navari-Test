@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth.models import Group
 from .forms import *
 from .models import *
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def is_customer(user):
     return user.groups.filter(name='CUSTOMER').exists()
@@ -32,3 +33,7 @@ def CustomerSignup(request):
         customer_form = CustomerForm()
         
     return render(request, 'accounts/register.html', {'user_form': user_form, 'customer_form': customer_form})
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/customerlogin')
