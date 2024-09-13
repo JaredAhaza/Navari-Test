@@ -1,0 +1,6 @@
+<form action="{% url 'borrow_book' %}" method="post"></form>
+    {% csrf_token %}
+    {{ borrowing_form }}
+    <input type="hidden" name="book_id" value="{{ book.id }}">
+    <button type="submit">Borrow</button>
+</form>

@@ -2,13 +2,15 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from accounts.models import *
+from .models import *
 
 # Create your views here.
 def home(request):
     return render(request, 'library/index.html')
 
 def books(request):
-    return render(request, 'library/books.html')
+    books = Book.objects.all()
+    return render(request, 'library/books.html', {'object_list': books})
 
 @login_required
 def usernav(request):
