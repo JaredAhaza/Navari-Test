@@ -1,7 +1,12 @@
 
-{% extends 'includes/nav-carousel.html' %}
-
 {% block content %}
+    {% if user.is_authenticated %}
+        <!-- authenticated user content -->
+        {% include 'includes/usernav.html' %}
+    {% else %}
+        <!-- anonymous user content -->
+        {% include 'includes/nav-carousel.html' %}
+    {% endif %}
 
 {% load static %}
         <!-- Start: Search Section -->

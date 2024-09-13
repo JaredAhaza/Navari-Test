@@ -11,5 +11,7 @@ class BookForm(forms.ModelForm):
             self.fields['borrowed_by'].queryset = Customer.objects.all()
 
 
-class BorrowBookForm(forms.Form):
-    book_id = forms.IntegerField(widget=forms.HiddenInput())
+class BorrowingForm(forms.ModelForm):
+    class Meta:
+        model = Borrowing
+        fields = ('customer', 'fee')
