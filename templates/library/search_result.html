@@ -1,0 +1,22 @@
+{% block content %}
+    {% if user.is_authenticated %}
+        <!-- authenticated user content -->
+        {% include 'includes/usernav.html' %}
+    {% else %}
+        <!-- anonymous user content -->
+        {% include 'includes/navbar.html' %}
+    {% endif %}
+
+{% load static %}
+
+
+{% block content %}
+  <h1>Search Results</h1>
+  <ul>
+    {% for book in object_list %}
+      <li>
+        {{ book.title }} by {{ book.author }} ({{ book.category }})
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

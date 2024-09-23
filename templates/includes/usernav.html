@@ -37,7 +37,7 @@
     </head>
 
     <body class="layout-v2">
-
+        
         <!-- Start: Header Section -->
         <header id="header" class="">
             <div class="">
@@ -65,10 +65,12 @@
                                                 <li><a href="/logout">Logout</a></li>
                                                 <li><a href="/customersignup">Register</a></li>
                                                 <li>
+
                                                     <a href="#" title="Account">
                                                         <i class="fa fa-user"></i>
                                                         <p>Hey, <b>{{ customer.user }}</b> </p>
                                                         <small class="text-muted">{{ customer.customer_id }}</small>
+                                                        
                                                     </a>
                                                 </li>
                                             </ul>
@@ -82,7 +84,7 @@
             </div>
         </header>
         <!-- End: Header Section -->
-
+        
         {% block content %}
 
         {% endblock %}

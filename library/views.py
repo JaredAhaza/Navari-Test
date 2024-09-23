@@ -23,3 +23,17 @@ def usernav(request):
         return redirect('customersignup')
     context = {'customer': customer}
     return render(request, 'includes/usernav.html', context)
+
+def search_books(request):
+    books = Book.objects.all()
+    title = request.GET.get('title')
+    author = request.GET.get('quthor')
+    category = request.GET.get('category')
+
+    if title:
+        books = books.filter(title__icontains=title)
+    if author:
+        books = books.filter(author__icontains=author)
+    if category:
+        books = books.filter(category__icontains=category)
+    return render(request, 'library/search_result.html', {'object_list': books})
