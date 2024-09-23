@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.db import models
 from accounts.models import *
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 # Create your models here.
 class Book(models.Model):
@@ -94,3 +95,51 @@ class Returning(models.Model):
     def calculate_total_fee(self):
         return self.borrowing.book_price + self.fine
     
+from django.db import models
+from decimal import Decimal
+from .models import Borrowing
+
+class Invoice(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    date_generated = models.DateField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=7, decimal_places=2, default=0)
+    is_paid = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Invoice for {self.customer.user} - {self.date_generated.strftime('%Y-%m-%d')}"
+
+    def generate_invoice_for_customer(self):
+        # Get all borrowings for the customer
+        borrowings = Borrowing.objects.filter(customer=self.customer)
+        total_amount = Decimal(0)
+        invoice_details = []
+
+        # Calculate total fee and fine
+        for borrowing in borrowings:
+            total_fee = Decimal(0)
+            
+            if hasattr(borrowing, 'returning'):
+                # Use the calculate_total_fee() method to get the total including fine
+                total_fee = borrowing.returning.calculate_total_fee()
+            else:
+                # Only the book price if the book has not been returned
+                total_fee = borrowing.book_price
+            
+            # Add total fee to the overall total amount
+            total_amount += total_fee
+
+            # Append book details to invoice_details for reference
+            invoice_details.append({
+                'book': borrowing.book.title,
+                'fine': borrowing.returning.fine if hasattr(borrowing, 'returning') else 0,
+                'total_fee': total_fee
+            })
+        
+        # Update or create the invoice
+        invoice = Invoice.objects.create(customer=self.customer, total_amount=total_amount)
+
+        return {
+            'invoice': invoice,
+            'invoice_details': invoice_details,
+            'total_amount': total_amount,
+        }
