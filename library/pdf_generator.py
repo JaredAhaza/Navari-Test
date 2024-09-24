@@ -38,7 +38,7 @@ def generate_invoice_pdf(invoice_id):
 
         y_position -= 40
 
-    p.drawString(100, y_position - 20, f"Total_due: {invoice.total_amount} Shillings")
+    p.drawString(100, y_position - 20, f"Total_due: {total_fee} Shillings")
 
     p.showPage()
     p.save()

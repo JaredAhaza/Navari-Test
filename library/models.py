@@ -2,9 +2,7 @@ from decimal import Decimal
 from django.db import models
 from accounts.models import *
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 
-# Create your models here.
 class Book(models.Model):
     CATEGORY = (
         ('Kids & Teens', 'Kids'),
@@ -34,18 +32,21 @@ class Debt(models.Model):
 
     def __str__(self):
         return f"Debt for {self.customer.user}: {self.total_debt} shillings"
-    
+
     def update_debt(self):
         borrowings = Borrowing.objects.filter(customer=self.customer)
         total_debt = Decimal(0)
+
         for borrowing in borrowings:
-            if hasattr(borrowing, 'returning') and borrowing.returning.is_returned:
+            if hasattr(borrowing, 'returning'):
                 total_debt += borrowing.returning.calculate_total_fee()
             else:
                 total_debt += borrowing.book_price
+
         self.total_debt = total_debt
         self.save()
-    
+
+
 class Borrowing(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -55,7 +56,7 @@ class Borrowing(models.Model):
 
     def __str__(self):
         return f"{self.book.title} borrowed by {self.customer.user}"
-    
+
     def save(self, *args, **kwargs):
         if self.book:
             self.book_price = self.book.price
@@ -63,14 +64,12 @@ class Borrowing(models.Model):
         debt.update_debt()
         if debt.total_debt > 500:
             raise ValidationError("Customer has a debt exceeding 500 shillings, cannot borrow more books")
-        if self.book:
-            self.book_price = self.book.price
-            self.book.is_available = False
-            self.book.save()
+        self.book.is_available = False
+        self.book.save()
         super().save(*args, **kwargs)
         debt.update_debt()
 
-    
+
 class Returning(models.Model):
     borrowing = models.OneToOneField(Borrowing, on_delete=models.CASCADE)
     is_returned = models.BooleanField(default=False)
@@ -78,68 +77,68 @@ class Returning(models.Model):
     is_damaged = models.BooleanField(default=False)
     fine = models.DecimalField(max_digits=7, decimal_places=2, default=0)
 
-
     def save(self, *args, **kwargs):
+        # Calculate fine based on lateness and damage
         self.fine = (100 if self.is_late else 0) + (100 if self.is_damaged else 0)
+
+        # Call the parent save method to ensure object is saved
         super().save(*args, **kwargs)
 
         if self.is_returned:
+            # Mark the book as available again
             self.borrowing.book.is_available = True
             self.borrowing.book.save()
+
+            # Get or create the customer's debt object
             debt, created = Debt.objects.get_or_create(customer=self.borrowing.customer)
-            total_deduction = self.borrowing.book_price + self.fine
-            debt.total_debt -= total_deduction
+
+            # Update the customer's total debt after the return
             debt.update_debt()
-        super().save(*args, **kwargs)
 
     def calculate_total_fee(self):
+        # Total fee includes the book price and the fine
         return self.borrowing.book_price + self.fine
-    
-from django.db import models
-from decimal import Decimal
-from .models import Borrowing
+
+
 
 class Invoice(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     date_generated = models.DateField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     is_paid = models.BooleanField(default=False)
-    
+
     def __str__(self):
         return f"Invoice for {self.customer.user} - {self.date_generated.strftime('%Y-%m-%d')}"
 
     def generate_invoice_for_customer(self):
-        # Get all borrowings for the customer
         borrowings = Borrowing.objects.filter(customer=self.customer)
         total_amount = Decimal(0)
         invoice_details = []
 
-        # Calculate total fee and fine
         for borrowing in borrowings:
-            total_fee = Decimal(0)
-            
-            if hasattr(borrowing, 'returning'):
-                # Use the calculate_total_fee() method to get the total including fine
-                total_fee = borrowing.returning.calculate_total_fee()
-            else:
-                # Only the book price if the book has not been returned
-                total_fee = borrowing.book_price
-            
-            # Add total fee to the overall total amount
+            total_fee = borrowing.returning.calculate_total_fee() if hasattr(borrowing, 'returning') else borrowing.book_price
             total_amount += total_fee
-
-            # Append book details to invoice_details for reference
             invoice_details.append({
                 'book': borrowing.book.title,
                 'fine': borrowing.returning.fine if hasattr(borrowing, 'returning') else 0,
                 'total_fee': total_fee
             })
-        
-        # Update or create the invoice
-        invoice = Invoice.objects.create(customer=self.customer, total_amount=total_amount)
 
+        invoice = Invoice.objects.create(customer=self.customer, total_amount=total_amount)
         return {
             'invoice': invoice,
             'invoice_details': invoice_details,
             'total_amount': total_amount,
         }
+
+    def clear_customer_debt(self):
+        """Clears the debt for the customer associated with this invoice."""
+        debt, created = Debt.objects.get_or_create(customer=self.customer)
+        debt.total_debt = 0
+        debt.save()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.is_paid:
+            # Clear customer debt if the invoice is marked as paid
+            self.clear_customer_debt()

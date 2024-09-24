@@ -4,6 +4,7 @@ from django.utils.html import format_html
 from .forms import *
 from django.http import FileResponse
 from .pdf_generator import generate_invoice_pdf
+import pdfkit
 
 # Register your models here.
 class BookAdmin(admin.ModelAdmin):
@@ -29,7 +30,14 @@ def download_invoice_pdf(modeladmin, request, queryset):
         return response
     else:
         pass
+
+def mark_as_paid(modeladmin, request, queryset):
+    for invoice in queryset:
+        if not invoice.is_paid:
+            invoice.is_paid = True
+            invoice.save()
+mark_as_paid.short_description = "Mark selected invoices as paid"
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('customer', 'date_generated', 'total_amount', 'is_paid')
-    actions = [download_invoice_pdf]
+    actions = [mark_as_paid,download_invoice_pdf]
 admin.site.register(Invoice, InvoiceAdmin)
