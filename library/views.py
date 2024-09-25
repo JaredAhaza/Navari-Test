@@ -23,8 +23,8 @@ def usernav(request):
     except Customer.DoesNotExist:
         print("Customer does not exist for user:", request.user.username)  # Debug output
         return redirect('customersignup')  # Redirect to signup if no customer found
-    
-    context = {'customers': [customer]}  # Wrap in a list for iteration
+    print("Customer:", customer)
+    context = {'customer': customer}
     return render(request, 'includes/usernav.html', context)
 
 # views.py
