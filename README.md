@@ -24,6 +24,7 @@ This ia a library management system that I am doing as a software development te
   - Viewing user activity logs.
   - Issuing Invoices to users returning books.
   - Track debts of customers.
+  
 - This sytem also allows customers to perform some limited operations on it which include:
   - Creating user accpounts.
   - Logging in to their account.
