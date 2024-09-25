@@ -9,14 +9,15 @@
 
 {% load static %}
 
-
-{% block content %}
-  <h1>Search Results</h1>
+<h1>Search Results</h1>
+  
+{% if object_list %}
   <ul>
     {% for book in object_list %}
-      <li>
-        {{ book.title }} by {{ book.author }} ({{ book.category }})
-      </li>
+      <li>{{ book.title }} by {{ book.author }} ({{ book.category }})</li>
     {% endfor %}
   </ul>
+{% else %}
+  <p>No results found. Please try again with different criteria.</p>
+{% endif %}
 {% endblock %}

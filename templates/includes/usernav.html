@@ -68,10 +68,11 @@
 
                                                     <a href="#" title="Account">
                                                         <i class="fa fa-user"></i>
-                                                        <p>Hey, <b>{{ customer.user }}</b> </p>
-                                                        <small class="text-muted">{{ customer.customer_id }}</small>
-                                                        
+                                                        <p>Hey, <b>{{ customers.0.user.username }}</b></p>  <!-- Display username -->
+                                                        <small class="text-muted">{{ customers.0.customer_id }}</small>  <!-- Display customer ID -->
                                                     </a>
+                                                    
+                                                
                                                 </li>
                                             </ul>
                                         </div>

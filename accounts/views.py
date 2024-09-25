@@ -17,22 +17,25 @@ def CustomerSignup(request):
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password1'])
             user.save()
+            
             customer = customer_form.save(commit=False)
             customer.user = user
             customer.save()
+            print(f"Customer created: {customer.customer_id}")  # Log customer creation
+            
             group = Group.objects.get(name='CUSTOMER')
             user.groups.add(group)
             
-            return redirect('customerlogin')
+            return redirect('customerlogin')  # Redirect to login or another view
         else:
-            pass
-            # If forms are not valid, pass the forms with errors back to the template
+            print("Forms are invalid:", user_form.errors, customer_form.errors)  # Log form errors
             
     else:
         user_form = CustomerUserForm()
         customer_form = CustomerForm()
         
     return render(request, 'accounts/register.html', {'user_form': user_form, 'customer_form': customer_form})
+
 
 def logout_view(request):
     logout(request)
