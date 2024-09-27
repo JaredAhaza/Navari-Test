@@ -34,6 +34,14 @@ This ia a library management system that I am doing as a software development te
   - Searching for books by title, category or author.
   - Viewing the pricing of books.
 
+## How to run
+- Clone repository using the git clone command
+- Create virtualenvironment
+- Use pip command to install the requirements.txt file to run the project
+- Use the following credentials for superuser or create a new one:
+  - Username: tech
+  - password: 12345678
+
 ## Screenshots
 
 ### Homepage
