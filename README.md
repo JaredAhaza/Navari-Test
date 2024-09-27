@@ -37,21 +37,21 @@ This ia a library management system that I am doing as a software development te
 ## Screenshots
 
 ### Homepage
-![Homepage screenshot for customer](screenshot1.png)
-![Homepage screenshot for Search](screenshot2.png)
-![Homepage screenshot for books list](screenshot3.png)
+![Homepage screenshot for customer](screenshots/screenshot1.png)
+![Homepage screenshot for Search](screenshots/screenshot2.png)
+![Homepage screenshot for books list](screenshots/screenshot3.png)
 
 ### Customer Accounts
-![User Registration screenshot for customer](screenshot4.png)
-![User Login screenshot for customer](screenshot5.png)
+![User Registration screenshot for customer](screenshots/screenshot4.png)
+![User Login screenshot for customer](screenshots/screenshot5.png)
 
 ### Admin Side
-![Admin homepage screenshot](screenshot6.png)
-![Admin side customer list screenshot](screenshot7.png)
-![Admin side user list screenshot](screenshot8.png)
-![Admin side groups list screenshot](screenshot9.png)
-![Admin side Books list screenshot](screenshot10.png)
-![Admin side borrowings screenshot](screenshot11.png)
-![Admin side debts screenshot](screenshot12.png)
-![Admin side invoices screenshot](screenshot13.png)
-![Admin side returnings screenshot](screenshot14.png)
+![Admin homepage screenshot](screenshots/screenshot6.png)
+![Admin side customer list screenshot](screenshots/screenshot7.png)
+![Admin side user list screenshot](screenshots/screenshot8.png)
+![Admin side groups list screenshot](screenshots/screenshot9.png)
+![Admin side Books list screenshot](screenshots/screenshot10.png)
+![Admin side borrowings screenshot](screenshots/screenshot11.png)
+![Admin side debts screenshot](screenshots/screenshot12.png)
+![Admin side invoices screenshot](screenshots/screenshot13.png)
+![Admin side returnings screenshot](screenshots/screenshot14.png)
